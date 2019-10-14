@@ -22,6 +22,7 @@ parser.add_option("--entropy", "--entropy", dest="entropy", default="False", hel
 
 (options, args) = parser.parse_args()
 n = int(options.n)
+logn = int(np.log(n+0.0001)/np.log(2))
 num_layers = int(options.num_layers)
 C = float(options.C)
 eps = float(options.eps)
@@ -31,6 +32,9 @@ ntrain = int(options.ntrain)
 epochs = int(options.epochs)
 had = hadamard(n)/np.sqrt(n)
 entropy = eval(options.entropy)
+
+print ("n=%d logn=%d" % (n, logn))
+
 
 def entropy_reg(C):
 	def entropy_reg_do(weight_matrix):
@@ -46,11 +50,11 @@ for i in range(num_layers):
 	else:
 		regularizer = regularizers.l1(C)
 	model.add(layers.Dense(
-            n, 
-            use_bias=False,
-            kernel_initializer="orthogonal",
+        n, 
+        use_bias=False,
+        kernel_initializer="orthogonal",
 	    kernel_constraint= constraints.unit_norm(axis=1),
-            kernel_regularizer=regularizer))
+        kernel_regularizer=regularizer))
 
 
 model.compile(
